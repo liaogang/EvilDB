@@ -5,21 +5,31 @@ import (
 	"sync"
 )
 
-func (slf *Wrap) ArrayOfName(name string) *Array {
+func (slf *Wrap) ArrayOfName(name string) (*Array, error) {
 	var arr = new(Array)
 
 	var folderName = ".array_" + name
 
 	var db = slf.subDBWithSubFolder(folderName)
 
+	//if db.BoolOfKey("LOCK") {
+	//	return nil, fmt.Errorf("this array is in using")
+	//} else {
+	//	db.writeAny("LOCK", true)
+	//}
+
 	arr.inner = db
 	arr.name = name
 
-	return arr
+	arr.LoadAllMember()
+
+	return arr, nil
 }
 
 /*
 .array_name/
+
+.array_name/LOCK 标记正在使用
 
 .array_name/size -> size
 
@@ -37,12 +47,32 @@ type Array struct {
 	inner *Wrap
 	name  string
 
+	cache []string
+
 	lastIndex int
 
 	lock *sync.Mutex
 }
 
+func (slf *Array) LoadAllMember() {
+	//load all array items
+	var db = slf.inner
+
+	//first load size
+	var size = int(db.Uint32OfKey("size"))
+	slf.cache = make([]string, 0)
+	for i := 0; i < size; i++ {
+		var indexStr = strconv.Itoa(i)
+		slf.cache = append(slf.cache, db.stringOfKey(indexStr))
+	}
+	slf.lastIndex = size - 1
+}
+
 func (slf *Array) Append(item any) {
+
+	if slf.lock == nil {
+		slf.lock = new(sync.Mutex)
+	}
 
 	slf.lock.Lock()
 
@@ -56,6 +86,10 @@ func (slf *Array) Append(item any) {
 
 func (slf *Array) Size() int {
 	return slf.lastIndex + 1
+}
+
+func (slf *Array) Item(index int) string {
+	return slf.cache[index]
 }
 
 func (slf *Array) DeleteLastItem() {
