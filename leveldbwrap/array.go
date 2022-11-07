@@ -6,20 +6,27 @@ import (
 )
 
 func (slf *Wrap) ArrayOfName(name string) (*Array, error) {
+
+	//check from cache
+	if slf.arrCache == nil {
+		slf.arrCache = make(map[string]*Array, 0)
+	}
+
+	if arr, ok := slf.arrCache[name]; ok {
+		return arr, nil
+	}
+
+	//create
 	var arr = new(Array)
 
 	var folderName = ".array_" + name
 
 	var db = slf.subDBWithSubFolder(folderName)
 
-	//if db.BoolOfKey("LOCK") {
-	//	return nil, fmt.Errorf("this array is in using")
-	//} else {
-	//	db.writeAny("LOCK", true)
-	//}
-
 	arr.inner = db
 	arr.name = name
+
+	slf.arrCache[name] = arr
 
 	arr.LoadAllMember()
 

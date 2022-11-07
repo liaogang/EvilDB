@@ -6,7 +6,7 @@ import (
 
 func main() {
 
-	var wrap, err = ldb.NewWrap("./", "sharedDBForMgr")
+	var wrap, err = ldb.NewWrap("./", "db")
 	if err != nil {
 
 	} else {

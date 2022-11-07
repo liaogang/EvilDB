@@ -25,14 +25,16 @@ type Wrap struct {
 	path string
 
 	updates *leveldb.Batch
+
+	arrCache map[string]*Array
 }
 
-func NewWrap(rootDir string, leaf string) (*Wrap, error) {
-	return newWrap(rootDir, leaf)
+func NewWrap(path string) (*Wrap, error) {
+	return newWrap(path)
 }
 
-func (slf *Wrap) NewWrapWithSubFolder(sub string) *Wrap {
-	return slf.subDBWithSubFolder(sub)
+func (slf *Wrap) SubWrap(folder string) *Wrap {
+	return slf.subWrap(folder)
 }
 
 func (slf *Wrap) DeleteItem(key string) {

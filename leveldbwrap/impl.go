@@ -4,29 +4,27 @@ import (
 	"bytes"
 	"encoding/gob"
 	"github.com/syndtr/goleveldb/leveldb"
-	"path"
 	"path/filepath"
 	"strings"
 )
 
-func newWrap(rootDir string, leaf string) (*Wrap, error) {
+func newWrap(path string) (*Wrap, error) {
 
 	var wrap = new(Wrap)
 
-	var diskPath = path.Join(rootDir, leaf)
-	var db, err = leveldb.OpenFile(diskPath, nil)
+	var db, err = leveldb.OpenFile(path, nil)
 	if err != nil {
 		return nil, err
 	} else {
 		wrap.inner = db
-		wrap.folder_in_disk = diskPath
+		wrap.folder_in_disk = path
 		wrap.path = "/"
 		return wrap, nil
 	}
 
 }
 
-func (slf *Wrap) subDBWithSubFolder(sub string) *Wrap {
+func (slf *Wrap) subWrap(sub string) *Wrap {
 
 	if strings.Contains(sub, "/") {
 		panic("folder name should not contains `/`")
