@@ -21,7 +21,7 @@ func (slf *Wrap) ArrayOfName(name string) (*Array, error) {
 
 	var folderName = ".array_" + name
 
-	var db = slf.subDBWithSubFolder(folderName)
+	var db = slf.SubWrap(folderName)
 
 	arr.inner = db
 	arr.name = name

@@ -11,9 +11,6 @@ const DBReadKVDebug = true
 leveldb 的包装
 */
 
-//goland:noinspection ALL
-const G_Level_Db_Index_Key = "_g_level_db_index_key_"
-
 //goland:noinspection GoSnakeCaseUsage
 type Wrap struct {
 	inner *leveldb.DB

@@ -32,7 +32,7 @@ func Test_levelDB_all_key_val(t *testing.T) {
 
 func Test_EmptyVal(t *testing.T) {
 
-	var wrap, err = NewWrap("./", "sharedDBForMgr")
+	var wrap, err = NewWrap("../.db")
 	if err != nil {
 
 	} else {
