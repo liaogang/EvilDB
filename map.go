@@ -1,7 +1,7 @@
-package leveldbwrap
+package EvilDB
 
 type WrapMap struct {
-	w *Wrap
+	w *DB
 }
 
 func (slf *WrapMap) WriteKeyVal(key string, val any) {

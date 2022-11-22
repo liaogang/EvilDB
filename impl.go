@@ -1,4 +1,4 @@
-package leveldbwrap
+package EvilDB
 
 import (
 	"bytes"
@@ -8,9 +8,9 @@ import (
 	"strings"
 )
 
-func newWrap(path string) (*Wrap, error) {
+func newWrap(path string) (*DB, error) {
 
-	var wrap = new(Wrap)
+	var wrap = new(DB)
 
 	var db, err = leveldb.OpenFile(path, nil)
 	if err != nil {
@@ -24,13 +24,13 @@ func newWrap(path string) (*Wrap, error) {
 
 }
 
-func (slf *Wrap) subWrap(sub string) *Wrap {
+func (slf *DB) subWrap(sub string) *DB {
 
 	if strings.Contains(sub, "/") {
 		panic("folder name should not contains `/`")
 	}
 
-	var wrap = new(Wrap)
+	var wrap = new(DB)
 
 	wrap.inner = slf.inner
 	wrap.path = filepath.Join(slf.path, sub)
@@ -42,7 +42,7 @@ func (slf *Wrap) subWrap(sub string) *Wrap {
 	return wrap
 }
 
-func (slf *Wrap) hasDir(dir string) bool {
+func (slf *DB) hasDir(dir string) bool {
 	var path = filepath.Join(slf.path, dir)
 
 	var _, err = slf.inner.Get([]byte(path), nil)
@@ -54,7 +54,7 @@ func (slf *Wrap) hasDir(dir string) bool {
 
 }
 
-func (slf *Wrap) writeAny(key string, val any) {
+func (slf *DB) writeAny(key string, val any) {
 
 	if val == nil {
 		panic("value of key is nil")
@@ -68,11 +68,11 @@ func (slf *Wrap) writeAny(key string, val any) {
 	slf.WriteData(key, buf.Bytes())
 }
 
-func (slf *Wrap) writeString(key string, val string) {
+func (slf *DB) writeString(key string, val string) {
 	slf.WriteData(key, []byte(val))
 }
 
-func (slf *Wrap) writeData(key string, val []byte) {
+func (slf *DB) writeData(key string, val []byte) {
 
 	if DBWriteKVDebug {
 		println("levelDbWrap write data, key", key, " val: ", val)
@@ -86,7 +86,7 @@ func (slf *Wrap) writeData(key string, val []byte) {
 
 }
 
-func (slf *Wrap) stringOfKey(key string) string {
+func (slf *DB) stringOfKey(key string) string {
 	var fullKey = slf.fullKeyPath(key)
 	var val, err = slf.inner.Get(fullKey, nil)
 	if err != nil {
@@ -97,7 +97,7 @@ func (slf *Wrap) stringOfKey(key string) string {
 	}
 }
 
-func (slf *Wrap) dataOfKey(key string) []byte {
+func (slf *DB) dataOfKey(key string) []byte {
 
 	var fullKey = slf.fullKeyPath(key)
 	var val, err = slf.inner.Get(fullKey, nil)
@@ -109,27 +109,27 @@ func (slf *Wrap) dataOfKey(key string) []byte {
 	}
 }
 
-func (slf *Wrap) int64OfKey(key string) int64 {
+func (slf *DB) int64OfKey(key string) int64 {
 	return levelDbWrap_objectOfKey[int64](slf, key)
 }
 
-func (slf *Wrap) boolOfKey(key string) bool {
+func (slf *DB) boolOfKey(key string) bool {
 	return levelDbWrap_objectOfKey[bool](slf, key)
 }
 
-func (slf *Wrap) uint64OfKey(key string) uint64 {
+func (slf *DB) uint64OfKey(key string) uint64 {
 	return levelDbWrap_objectOfKey[uint64](slf, key)
 }
 
-func (slf *Wrap) uint32OfKey(key string) uint32 {
+func (slf *DB) uint32OfKey(key string) uint32 {
 	return levelDbWrap_objectOfKey[uint32](slf, key)
 }
 
-func (slf *Wrap) stringArrayOfKey(key string) []string {
+func (slf *DB) stringArrayOfKey(key string) []string {
 	return levelDbWrap_objectOfKey[[]string](slf, key)
 }
 
-func (slf *Wrap) deleteItem(key string) {
+func (slf *DB) deleteItem(key string) {
 	if slf.updates != nil {
 		slf.updates.Delete(slf.fullKeyPath(key))
 	} else {
@@ -137,7 +137,7 @@ func (slf *Wrap) deleteItem(key string) {
 	}
 }
 
-func (slf *Wrap) beginUpdate() {
+func (slf *DB) beginUpdate() {
 	if slf.updates != nil {
 		panic("last update not completed!")
 	} else {
@@ -145,12 +145,12 @@ func (slf *Wrap) beginUpdate() {
 	}
 }
 
-func (slf *Wrap) applyUpdate() error {
+func (slf *DB) applyUpdate() error {
 	var err = slf.inner.Write(slf.updates, nil)
 	slf.updates = nil
 	return err
 }
 
-func (slf *Wrap) fullKeyPath(leaf string) []byte {
+func (slf *DB) fullKeyPath(leaf string) []byte {
 	return []byte(filepath.Join(slf.path, leaf))
 }

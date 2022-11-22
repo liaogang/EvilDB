@@ -1,4 +1,4 @@
-package leveldbwrap
+package EvilDB
 
 import (
 	"github.com/syndtr/goleveldb/leveldb"
@@ -12,7 +12,7 @@ leveldb 的包装
 */
 
 //goland:noinspection GoSnakeCaseUsage
-type Wrap struct {
+type DB struct {
 	inner *leveldb.DB
 
 	//db folder in disk
@@ -26,26 +26,26 @@ type Wrap struct {
 	arrCache map[string]*Array
 }
 
-func NewWrap(path string) (*Wrap, error) {
+func NewDB(path string) (*DB, error) {
 	return newWrap(path)
 }
 
-func (slf *Wrap) SubWrap(folder string) *Wrap {
+func (slf *DB) SubDB(folder string) *DB {
 	return slf.subWrap(folder)
 }
 
-func (slf *Wrap) DeleteItem(key string) {
+func (slf *DB) DeleteItem(key string) {
 	slf.deleteItem(key)
 }
 
-func (slf *Wrap) BeginUpdate() {
+func (slf *DB) BeginUpdate() {
 	slf.beginUpdate()
 }
 
-func (slf *Wrap) ApplyUpdate() error {
+func (slf *DB) ApplyUpdate() error {
 	return slf.applyUpdate()
 }
 
-func (slf *Wrap) HasDir(dir string) bool {
+func (slf *DB) HasDir(dir string) bool {
 	return slf.hasDir(dir)
 }

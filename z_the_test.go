@@ -1,4 +1,4 @@
-package leveldbwrap
+package EvilDB
 
 import "testing"
 
@@ -32,7 +32,7 @@ func Test_levelDB_all_key_val(t *testing.T) {
 
 func Test_EmptyVal(t *testing.T) {
 
-	var wrap, err = NewWrap("../.db")
+	var wrap, err = NewDB("./.db")
 	if err != nil {
 
 	} else {

@@ -1,4 +1,4 @@
-module github.com/liaogang/LevelDBWrap
+module github.com/liaogang/EvilDB
 
 go 1.19
 

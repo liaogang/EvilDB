@@ -1,4 +1,4 @@
-package leveldbwrap
+package EvilDB
 
 import (
 	"bytes"
@@ -8,7 +8,7 @@ import (
 	"github.com/syndtr/goleveldb/leveldb/util"
 )
 
-func allKeysWithPrefix(w *Wrap, prefix string) []string {
+func allKeysWithPrefix(w *DB, prefix string) []string {
 	var list []string
 	var iter = w.inner.NewIterator(util.BytesPrefix([]byte(prefix)), nil)
 	for iter.Next() {
@@ -21,7 +21,7 @@ func allKeysWithPrefix(w *Wrap, prefix string) []string {
 	return list
 }
 
-func AllKeys(w *Wrap) []string {
+func AllKeys(w *DB) []string {
 	var list []string
 	var iter = w.inner.NewIterator(nil, nil)
 	for iter.Next() {
@@ -64,7 +64,7 @@ func gobDecodeDataToTheType[T int64 | uint64 | uint32 | bool | []string](data []
 }
 
 //goland:noinspection ALL
-func levelDbWrap_objectOfKey[T int64 | uint64 | uint32 | bool | []string](w *Wrap, key string) T {
+func levelDbWrap_objectOfKey[T int64 | uint64 | uint32 | bool | []string](w *DB, key string) T {
 
 	var fullKey = w.fullKeyPath(key)
 	var val, err = w.inner.Get(fullKey, nil)

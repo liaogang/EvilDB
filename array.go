@@ -1,11 +1,11 @@
-package leveldbwrap
+package EvilDB
 
 import (
 	"strconv"
 	"sync"
 )
 
-func (slf *Wrap) ArrayOfName(name string) (*Array, error) {
+func (slf *DB) ArrayOfName(name string) (*Array, error) {
 
 	//check from cache
 	if slf.arrCache == nil {
@@ -21,7 +21,7 @@ func (slf *Wrap) ArrayOfName(name string) (*Array, error) {
 
 	var folderName = ".array_" + name
 
-	var db = slf.SubWrap(folderName)
+	var db = slf.SubDB(folderName)
 
 	arr.inner = db
 	arr.name = name
@@ -51,7 +51,7 @@ last = size - 1
 */
 
 type Array struct {
-	inner *Wrap
+	inner *DB
 	name  string
 
 	cache []string
