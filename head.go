@@ -30,6 +30,10 @@ func NewDB(path string) (*DB, error) {
 	return newWrap(path)
 }
 
+func (slf *DB) GetInner() *leveldb.DB {
+	return slf.inner
+}
+
 func (slf *DB) SubDB(folder string) *DB {
 	return slf.subWrap(folder)
 }
