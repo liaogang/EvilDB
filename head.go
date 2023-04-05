@@ -4,8 +4,8 @@ import (
 	"github.com/syndtr/goleveldb/leveldb"
 )
 
-const DBWriteKVDebug = true
-const DBReadKVDebug = true
+const DBWriteKVDebug = false
+const DBReadKVDebug = false
 
 /*
 leveldb 的包装

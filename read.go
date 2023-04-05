@@ -1,5 +1,10 @@
 package EvilDB
 
+import (
+	"bytes"
+	"encoding/gob"
+)
+
 func (slf *DB) StringOfKey(key string) string {
 	return slf.stringOfKey(key)
 }
@@ -26,4 +31,26 @@ func (slf *DB) Uint32OfKey(key string) uint32 {
 
 func (slf *DB) StringArrayOfKey(key string) []string {
 	return slf.stringArrayOfKey(key)
+}
+
+func (slf *DB) AnyOfKey(key string) (ret any, err error) {
+	var w = slf
+	var fullKey = w.fullKeyPath(key)
+
+	var val []byte
+	val, err = w.inner.Get(fullKey, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var buf = bytes.NewBuffer(val)
+	var decoder = gob.NewDecoder(buf)
+
+	err = decoder.Decode(ret)
+	if err != nil {
+		return nil, err
+	} else {
+		return ret, nil
+	}
+
 }
